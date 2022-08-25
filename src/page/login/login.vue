@@ -14,8 +14,8 @@
                 <!-- 注册和登录按钮的切换 -->
                 <div class="reg-view" @click="regi = regi == '登录'?'注册':'登录'"><p>{{regi}}</p></div>
                 <!-- 注册和登录按钮 -->
-                <el-button v-if="regi == '注册'" @click="signin" type="success" class="meituan-btn">登录</el-button>
-                <el-button v-else type="success" @click="register" class="meituan-btn">注册</el-button>
+                <el-button v-if="regi == '注册'" @click="signin" type="success" :loading="load" class="meituan-btn">登录</el-button>
+                <el-button v-else type="success" @click="register" :loading="load" class="meituan-btn">注册</el-button>
             </div>
         </div>
     </div>
@@ -29,19 +29,40 @@ export default {
         const user = reactive({
             account: '',
             password: '',
-            regi: '注册'
+            regi: '注册',
+            load: false
         })
-        const signin = () => {
-            console.log(user.account,user.password);
+        const signin = async() => {
+            user.load = true
+            try {
+              const obj = {account:user.account,password:user.password}
+              const res = await new proxy.$request(proxy.$urls.m().login,obj).modepost()
+              console.log(res);
+              if (res.status !== 200) {
+                new proxy.$tips(res.data.msg,'warning').mess_age()
+              }else {
+                // 跳转到内容页面
+                localStorage.setItem('token',res.data.data.token)
+              }
+              user.load = false
+            } catch (e) {
+              new proxy.$tips('服务器发生错误','warning').mess_age()
+            }
         }
         const register = async() => {
-            const obj = {account:user.account,password:user.password}
-            const res = await new proxy.$request(proxy.$urls.m().register,obj).modepost()
-            console.log(res);
-            if (res.status !== 200) {
-                new proxy.$tips(res.data.msg,'warning').mess_age()
-            }else {
-                user.regi = '注册'
+            user.load = true
+            try {
+              const obj = {account:user.account,password:user.password}
+              const res = await new proxy.$request(proxy.$urls.m().register,obj).modepost()
+              console.log(res);
+              if (res.status !== 200) {
+                  new proxy.$tips(res.data.msg,'warning').mess_age()
+              }else {
+                  user.regi = '注册'
+              }
+              user.load = false
+            } catch (e) {
+                console.log('服务器发生错误');
             }
         }
         return {...toRefs(user),signin,register}
