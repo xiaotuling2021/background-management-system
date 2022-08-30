@@ -12,6 +12,7 @@ app.use(router)
 app.use(ElementPlus,{
     locale: zhCn,
   })
+// 注册图标
 
 // 请求地址
 import urls from '../api/api'
