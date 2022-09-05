@@ -11,7 +11,13 @@ const routes = [
         // 主页面
         path: '/index',
         name: 'index',
-        component: ()=>import(/*webpackChunkName*/'@/page/index/index.vue')
+        component: ()=>import(/*webpackChunkName*/'@/page/index/index.vue'),
+        redirect: '/userpage',
+        children: [{
+            path: '/userpage',
+            name: 'userpage',
+            component: ()=>import('@/page/user-page/user.vue')
+        }]
     },
 ]
 

@@ -1,11 +1,11 @@
 <template>
     <div>
         <div class="sidebar-top">
-            <div>老饭馆后台管理系统</div>
+            <div>星巴克后台管理</div>
             <div>退出</div>
         </div>
         <div class="sidebar-cont">
-            <el-menu>
+            <el-menu :default-active="ac_index" @select="select">
               <div v-for="(item,index) in items" :key="index">
                 <el-menu-item v-if="item.Subclass.length == 0" :index="item.id">
                     <el-icon>
@@ -29,11 +29,12 @@
             </el-menu>
         </div>
     </div>
+    <router-view></router-view>
 </template>
 
 <script>
 import {Watermelon,Pear,Bowl} from '@element-plus/icons-vue'
-import { shallowRef,reactive } from 'vue'
+import { shallowRef,ref, onMounted } from 'vue'
 export default {
     components: {
         Watermelon,
@@ -41,6 +42,7 @@ export default {
         Bowl
     },
     setup() {
+        const ac_index = ref('1')
         const Array = [
             {
                 id:'1',
@@ -90,7 +92,14 @@ export default {
             },
         ]
         const items = shallowRef(Array)
-        return {items}
+        function select(index,indexPath) {
+            localStorage.setItem('menuid',JSON.stringify(index))
+        }
+        onMounted(()=>{
+            ac_index.value = JSON.parse(localStorage.getItem('menuid'))
+        })
+
+        return {items,ac_index,select}
     },
 }
 </script>
