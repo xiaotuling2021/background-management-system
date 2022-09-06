@@ -14,7 +14,7 @@
                               :preview-src-list="[scope.row.head]" 
                               :hide-on-click-modal ="true"
                               lazy
-                              preview-teleported="true"
+                              :preview-teleported="true"
                               >
                         </el-image>
                 </template>    
@@ -22,6 +22,12 @@
             <el-table-column prop="sex" label="性别" align="center" min-width="100" />
             <el-table-column prop="position" label="职业" align="center" min-width="100" />
           </el-table>
+          <!-- 分页 -->
+          <el-pagination background layout="prev, pager, next"
+			 :total="40"
+			 :hide-on-single-page="true"
+			 @current-change="currentchange"
+			 />
         </div>
     </div>
 </template>
@@ -37,7 +43,20 @@ export default {
             sex:'男',
             position:'董事长'
         }])
-        return {res}
+        function currentchange(e) {
+            console.log(e);
+        } 
+        return {res,currentchange}
     },
 }
 </script>
+
+<style scoped="scoped">
+::v-deep .el-pagination.is-background .el-pager li:not(.is-disabled).is-active {
+	background-color: #00be06;
+	color: #fff;
+}
+.el-pagination {
+    margin-left: 550px;
+}
+</style>
