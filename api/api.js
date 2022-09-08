@@ -7,8 +7,10 @@ const urls = class{
         const register = `${url}/register`
         // 登录接口
         const login = `${url}/login`
+        // 用户列表
+        const pulluserlist = `${url}/pulluserlist`
 
-        return {register,login}
+        return {register,login,pulluserlist}
     }
 }
 

@@ -46,9 +46,11 @@ instance.interceptors.response.use(
                     })
                     .then(res=>{
                         // 跳转到登录界面
+                        window.location.href = '/'
                     })
                     .catch(err=>{
-
+                        // 跳转到登录界面
+                        window.location.href = '/'
                     })
                     break
             }

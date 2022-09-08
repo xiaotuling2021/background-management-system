@@ -23,9 +23,11 @@
 
 <script>
 import {reactive,toRefs,getCurrentInstance, onMounted} from 'vue'
+import {useRouter} from 'vue-router'
 export default {
     setup() {
         const {proxy} = getCurrentInstance()
+        const router = useRouter()
         const user = reactive({
             account: '',
             password: '',
@@ -43,6 +45,7 @@ export default {
               }else {
                 // 跳转到内容页面
                 localStorage.setItem('token',res.data.data.token)
+                router.push({name:'index'})
               }
               user.load = false
             } catch (e) {

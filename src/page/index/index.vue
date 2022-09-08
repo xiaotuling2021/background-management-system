@@ -7,12 +7,14 @@
         <div class="sidebar-cont">
             <el-menu :default-active="ac_index" @select="select">
               <div v-for="(item,index) in items" :key="index">
-                <el-menu-item v-if="item.Subclass.length == 0" :index="item.id">
-                    <el-icon>
-                        <component :is="item.icon"></component>
-                    </el-icon>
-                    <span>{{item.title}}</span>
-                </el-menu-item>
+                <router-link :to="{path:item.router}">
+                  <el-menu-item v-if="item.Subclass.length == 0" :index="item.id">
+                      <el-icon>
+                          <component :is="item.icon"></component>
+                      </el-icon>
+                      <span>{{item.title}}</span>
+                  </el-menu-item>
+                </router-link>
 
                 <el-sub-menu v-if="item.Subclass.length > 0" :index="item.id">
                     <template #title>
@@ -22,7 +24,9 @@
                         <span>{{item.title}}</span>
                     </template>
                     <el-menu-item-group v-for="(two,two_index) in item.Subclass" :key="two_index">
-                        <el-menu-item :index="two.id">{{two.title}}</el-menu-item>
+                        <router-link :to="{path:two.router}">
+                          <el-menu-item :index="two.id">{{two.title}}</el-menu-item>
+                        </router-link>
                     </el-menu-item-group>
                 </el-sub-menu>
               </div>
@@ -55,14 +59,14 @@ export default {
                 id:'2',
                 icon:Pear,
                 title:'用户列表',
-                router:'',
+                router:'userpage',
                 Subclass:[]//是否有二级，三级菜单
             },
             {
                 id:'3',
                 icon:Watermelon,
                 title:'订单管理',
-                router:'',
+                router:'order',
                 Subclass:[]//是否有二级，三级菜单
             },
             {

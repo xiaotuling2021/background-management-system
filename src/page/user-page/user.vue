@@ -2,7 +2,7 @@
     <div class="ordering">
         <div class="heading">用户列表</div>
         <div>
-          <el-table :data="res" style="width: 100%">
+          <el-table :data="user_array" style="width: 100%">
             <el-table-column prop="time" label="注册时间" align="center" min-width="100" />
             <el-table-column prop="name" label="姓名" align="center" min-width="100" />
             <el-table-column label="头像" align="center" min-width="100">
@@ -24,7 +24,7 @@
           </el-table>
           <!-- 分页 -->
           <el-pagination background layout="prev, pager, next"
-			 :total="40"
+			 :total="total"
 			 :hide-on-single-page="true"
 			 @current-change="currentchange"
 			 />
@@ -33,30 +33,43 @@
 </template>
 
 <script>
-import {reactive} from 'vue'
+import {reactive,onMounted,getCurrentInstance,toRefs} from 'vue'
 export default {
     setup() {
-        const res = reactive([{
-            time:'2021-10-11',
-            name:'马云',
-            head:'https://diancan-1252107261.cos.ap-chengdu.myqcloud.com/vue-element/1636910485866-7057020.jfif',
-            sex:'男',
-            position:'董事长'
-        }])
+        const {proxy} = getCurrentInstance()
+        const open_data = reactive({
+            user_array:[],//表格数据
+            total:0,//数据总条数
+            page: 0
+    })
+        onMounted(()=>{
+            userlist()
+        })
+        async function userlist() {
+            try {
+                const res = await new proxy.$request(proxy.$urls.m().pulluserlist + '?page=' + open_data.page).modeget()
+                console.log(res);
+                open_data.user_array = res.data.data.result
+                open_data.total = res.data.data.total
+            }catch(e) {
+                new proxy.$tips('服务器发生错误','error').mess_age()
+            }
+        }
         function currentchange(e) {
-            console.log(e);
+            open_data.page = e-1
+            userlist()
         } 
-        return {res,currentchange}
+        return {...toRefs(open_data),currentchange}
     },
 }
 </script>
 
 <style scoped="scoped">
-::v-deep .el-pagination.is-background .el-pager li:not(.is-disabled).is-active {
-	background-color: #00be06;
-	color: #fff;
-}
-.el-pagination {
-    margin-left: 550px;
-}
+  ::v-deep .el-pagination.is-background .el-pager li:not(.is-disabled).is-active {
+  	background-color: #00be06;
+  	color: #fff;
+  }
+  .el-pagination {
+      margin-left: 550px;
+  }
 </style>
