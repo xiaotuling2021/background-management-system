@@ -7,7 +7,7 @@
           <div class="quotation-title">交易时间</div>
           <div>
             <el-date-picker
-              v-model="value1"
+              v-model="time"
               type="daterange"
               range-separator="至"
               start-placeholder="开始时间"
@@ -44,70 +44,93 @@
         <el-table-column label="菜单详情" align="center" min-width="100">
             <!-- 头像 -->       
             <template #default="scope">
-                    <el-button size="small">详细菜单</el-button>
+                    <el-button size="small" @click="detailed(scope.row._id)">详细菜单</el-button>
             </template>    
         </el-table-column>
         <el-table-column prop="sett_amount" label="交易金额" align="center" min-width="100" />
         <el-table-column label="交易状态" align="center" min-width="100">
             <!-- 头像 -->       
             <template #default="scope">
-                    <el-button size="small" type="danger">未结账</el-button>
+                    <el-button size="small" type="danger" disabled v-if="scope.row.transac_status == 'success'">已结账</el-button>
+                    <el-button size="small" type="danger" v-else>未结账</el-button>
             </template>    
         </el-table-column>
       </el-table>
       <!-- 分页 -->
       <el-pagination
          background layout="prev, pager, next"
-		 :total="100"
-		 :hide-on-single-page="true"
-		 @current-change="currentchange"
+		     :total="total"
+		     :hide-on-single-page="true"
+		     @current-change="currentchange"
 		 />
     </div>
+    <!-- 弹窗 -->
+    <Dialog ref="dialog"></Dialog>
   </div>
 </template>
 
 <script>
-import {reactive,toRefs} from 'vue'
+import {reactive,toRefs,getCurrentInstance,onMounted,ref} from 'vue'
 import Dialog from './component/el-dialog.vue'
+import qs from 'qs'
 export default {
     components: {
         Dialog
     },
     setup() {
-        const res = reactive({
-            value1:'',
-            sevalue:'',
-            options:[
-                {
-                    value:'001',
-                    label:'001'
-                },
-                {
-                    value:'002',
-                    label:'002'
-                }
-            ],
-            // 表格数据
-            table_data:[
-                {
-                order_time:'2021-10-26 01:19:40',
-                table_number:'003',
-                number_of_diners:'3',
-                sett_amount:100
-                },
-                {
-                order_time:'2021-10-26 01:19:40',
-                table_number:'003',
-                number_of_diners:'3',
-                sett_amount:100
-                }
-            ]
+        const {proxy} = getCurrentInstance()
+        const dialog = ref()
+        const oper_data = reactive({
+            time:[],//选中的时间
+            sevalue:'',//选中的桌号
+            options:[],//桌号的数据
+            table_data:[],//表格数据
+            page: 0,//第一页
+            total: 0//数据总的条数
         })
 
-        function currentchange() {
+        // 请求数据
+        onMounted(()=>{
+          get_order()
+        })
 
+        async function get_order() {
+          const query = qs.stringify({
+            page:oper_data.page,
+            table_number:oper_data.sevalue,
+            order_time:JSON.stringify(oper_data.time)
+          })
+          try {
+            const TAB = new proxy.$request(proxy.$urls.m().gettable).modeget()
+            const ORDER = new proxy.$request(proxy.$urls.m().obtainorder + '?' + query).modeget()
+            const res = await Promise.all([TAB,ORDER])
+            // console.log(res);
+            oper_data.options = res[0].data.data
+            oper_data.table_data = res[1].data.data.result
+            oper_data.total = res[1].data.data.total
+          }catch(e) {
+            new proxy.$tips('服务器发生错误','error').mess_age()
+          }
         }
-        return {...toRefs(res),currentchange}
+        // 分页触发事件
+        function currentchange(e) {
+          // console.log(e);
+          oper_data.page = e - 1
+          get_order()
+        }
+
+        // 点击详细菜单传值给子组件
+        const detailed = async(id) => {
+          try {
+            const res = await new proxy.$request(proxy.$urls.m().vieworder + '?id=' + id).modeget()
+            // console.log(res);
+            dialog.value.popup(res.data.data)
+          }catch(e) {
+
+          }
+        }
+
+        return {...toRefs(oper_data),currentchange,detailed,dialog}
     },
 }
 </script>
