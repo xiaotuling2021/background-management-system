@@ -32,7 +32,7 @@
         </div>
         <!-- 查询按钮 -->
         <div class="quotation-query">
-            <el-button type="success">查询</el-button>
+            <el-button type="success" @click="queryFun" value-format="YYYY-MM-DD">查询</el-button>
         </div>
     </div>
     <!-- 表格 -->
@@ -44,7 +44,7 @@
         <el-table-column label="菜单详情" align="center" min-width="100">
             <!-- 头像 -->       
             <template #default="scope">
-                    <el-button size="small" @click="detailed(scope.row._id)">详细菜单</el-button>
+                    <el-button size="small" :loading="scope.$index == deta_load?true:false" @click="detailed(scope.$index,scope.row._id)">详细菜单</el-button>
             </template>    
         </el-table-column>
         <el-table-column prop="sett_amount" label="交易金额" align="center" min-width="100" />
@@ -86,7 +86,8 @@ export default {
             options:[],//桌号的数据
             table_data:[],//表格数据
             page: 0,//第一页
-            total: 0//数据总的条数
+            total: 0,//数据总的条数
+            deta_load:-1
         })
 
         // 请求数据
@@ -120,17 +121,27 @@ export default {
         }
 
         // 点击详细菜单传值给子组件
-        const detailed = async(id) => {
+        const detailed = async(index,id) => {
+          oper_data.deta_load = index
           try {
             const res = await new proxy.$request(proxy.$urls.m().vieworder + '?id=' + id).modeget()
             // console.log(res);
             dialog.value.popup(res.data.data)
+            oper_data.deta_load = -1
           }catch(e) {
-
+            oper_data.deta_load = -1
+            new proxy.$tips('服务器发生错误','error').mess_age()
           }
         }
 
-        return {...toRefs(oper_data),currentchange,detailed,dialog}
+        // 查询按钮
+        function queryFun() {
+          // console.log(oper_data.time);
+          // console.log(oper_data.sevalue);
+          get_order()
+        }
+
+        return {...toRefs(oper_data),currentchange,detailed,dialog,queryFun}
     },
 }
 </script>

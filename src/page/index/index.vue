@@ -73,7 +73,7 @@ export default {
                 id:'4',
                 icon:Watermelon,
                 title:'菜品管理',
-                router:'',
+                router:'dishes',
                 Subclass:[]//是否有二级，三级菜单
             },
             {

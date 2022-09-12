@@ -23,7 +23,17 @@ const routes = [
                 path:'/order',
                 name:'order',
                 component: ()=>import(/*webpackChunkName:'Order'*/'@/page/order/order.vue')
-            }
+            },
+            {//菜品管理
+                path:'/dishes',
+                name:'dishes',
+                component: ()=>import(/*webpackChunkName:'Dishes'*/'@/page/dishes/dishes.vue')
+            },
+            {//上传菜单
+                path:'/upload',
+                name:'upload',
+                component: ()=>import(/*webpackChunkName:'Upload'*/'@/page/dishes-upload/upload.vue')
+            },
     ]
     },
 ]
