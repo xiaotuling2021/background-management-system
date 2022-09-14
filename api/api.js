@@ -15,8 +15,15 @@ const urls = class{
         const obtainorder = `${url}obtainorder`
         // 获取详细菜单
         const vieworder = `${url}vieworder`
+        // 图片上传接口
+        const uploadres = `${url}uploadres`
+        // 获取菜品类目
+        const obtaincate = `${url}obtaincate`
+        // 获取菜品单位
+        const obtainunit = `${url}obtainunit`
 
-        return {register,login,pulluserlist,gettable,obtainorder,vieworder}
+        return {register,login,pulluserlist,gettable,obtainorder,vieworder,uploadres,
+            obtaincate,obtainunit}
     }
 }
 
