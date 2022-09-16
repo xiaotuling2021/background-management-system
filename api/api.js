@@ -21,9 +21,13 @@ const urls = class{
         const obtaincate = `${url}obtaincate`
         // 获取菜品单位
         const obtainunit = `${url}obtainunit`
+        // 添加菜品单位
+        const dishunit = `${url}dishunit`
+        // 提交菜品
+        const putdishes = `${url}putdishes`
 
         return {register,login,pulluserlist,gettable,obtainorder,vieworder,uploadres,
-            obtaincate,obtainunit}
+            obtaincate,obtainunit,dishunit,putdishes}
     }
 }
 

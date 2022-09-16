@@ -7,10 +7,10 @@
 
 
       <div class="content-view-ten">
-        <!-- 菜单类目 -->
+        <!-- 菜品类目 -->
         <div class="image-view-title">
-          <div class="image-list">菜单类目</div>
-            <el-select v-model="catevalue" class="m-2" placeholder="请选择桌号" size="large">
+          <div class="image-list">菜品类目</div>
+            <el-select v-model="catevalue" class="m-2" placeholder="请选择菜品类目" size="large">
                     <el-option
                       v-for="item in cate"
                       :key="item.value"
@@ -37,11 +37,11 @@
                       :value="item.value"
                     />
                 </el-select>
-                <el-input v-model="unit" placeholder="请输入自定义单位" clearable />
-                <div><el-button type="success" style="width:100%;padding: 12px 20px;">添加自定义单位</el-button></div>
+                <el-input v-if="compvalue == '自定义单位'" v-model="unit" placeholder="请输入自定义单位" clearable />
+                <div v-if="compvalue == '自定义单位'"><el-button type="success" style="width:100%;padding: 12px 20px;" @click="Dishunit" :loading="unitload">添加自定义单位</el-button></div>
             </div>
         </div>
-        <!-- 菜品图片 -->
+        <!-- 图片上传 -->
         <div class="image-view-title">
             <div class="image-list">菜品图片</div>
             <div>
@@ -89,13 +89,18 @@
 
             </div>
         </div>
+
+        <!-- 提交 -->
+        <div class="sub-button">
+          <el-button type="success" :loading="subload" @click="Submit">提交</el-button>
+        </div>
       </div>
     </div>
 </template>
 
 <script>
 import { ArrowRight,Plus } from '@element-plus/icons-vue'
-import {shallowRef,reactive,toRefs,getCurrentInstance,toRaw} from 'vue'
+import {shallowRef,reactive,toRefs,getCurrentInstance,toRaw,onMounted} from 'vue'
 export default {
     components:{
         Plus
@@ -112,27 +117,12 @@ export default {
             unit:'',//选中的自定义单位
             dialogVisible:false,
             dialogImageUrl:'',
-            cate:[
-                {
-                    label:'1',
-                    value:'1'
-                },
-                {
-                    label:'2',
-                    value:'2'
-                },
-            ],
-            company:[
-                {
-                    label:'1',
-                    value:'1'
-                },
-                {
-                    label:'2',
-                    value:'2'
-                },
-            ],
-            goodsimage:[]//上传接收的图片
+            cate:[],//菜品类目列表
+            company:[],//菜品单位列表
+            goodsimage:[],//上传接收的图片
+            unitload:false,//自定义单位按钮loading
+            subload:false,//提交按钮loading
+            id:'',//该条菜品数据唯一标识_id
         })
 
         // 点击文件列表中已上传的文件时的钩子:点击展开大图时触发
@@ -158,14 +148,71 @@ export default {
         const project = (file)=> {
         }
                   
+        onMounted(()=>{
+          cate_unit()
+        })
+        // 获取菜品类目和单位
+        async function cate_unit() {
+          try{
+            const CATE = new proxy.$request(proxy.$urls.m().obtaincate).modeget()
+            const UNIT = new proxy.$request(proxy.$urls.m().obtainunit).modeget()
+            const res = await Promise.all([CATE,UNIT])
+            console.log(res);
+            oper_data.cate = res[0].data.data
+            oper_data.company = res[1].data.data
+            oper_data.company.push({label:"自定义单位",unid:"980",value:"自定义单位",_id:"980"})
+          }catch(e){
+            
+          }
+        }
 
+        // 添加自定义单位
+        const Dishunit = async() => {
+          const obj = {unit:oper_data.unit}
+          oper_data.unitload = true
+          try {
+            const res = await new proxy.$request(proxy.$urls.m().dishunit,obj).modepost()
+            console.log(res);
+            if (res.status != 200) {
+              new proxy.$tips(res.data.msg,'warning').mess_age()
+            }else {
+              new proxy.$tips(res.data.msg,'success').mess_age()
+              oper_data.compvalue = ''
+              oper_data.unit = ''
+              cate_unit()
+            }
+            oper_data.unitload = false
+          }catch(e) {
+            oper_data.unitload = false
+            new proxy.$tips('服务器发生错误','error').mess_age()
+          }
+        }
 
-
+        // 提交上架菜品
+        const Submit = async() => {
+          oper_data.subload = true
+          const {id,catevalue,name,unitprice,compvalue,goodsimage} = oper_data
+          const obj = {id,category:catevalue,name,unitprice,
+                      unit:compvalue,image:goodsimage}
+          try {
+            const res =await new proxy.$request(proxy.$urls.m().putdishes,obj).modepost()
+            console.log(res);
+            if(res.status != 200) {
+              new proxy.$tips(res.data.msg,'warning').mess_age()
+            }else {
+              new proxy.$tips(res.data.msg,'success').mess_age()
+            }
+            oper_data.subload = false
+          }catch(e) {
+            oper_data.subload = false
+          }
+        }
 
 
 
         return {icon,...toRefs(oper_data),img_url,
-                onpreview,onremove,onsuccess,onerror,onprogress,project}
+                onpreview,onremove,onsuccess,onerror,
+                onprogress,project,Dishunit,Submit}
     },
 }
 </script>
