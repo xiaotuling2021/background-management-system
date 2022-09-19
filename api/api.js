@@ -25,9 +25,15 @@ const urls = class{
         const dishunit = `${url}dishunit`
         // 提交菜品
         const putdishes = `${url}putdishes`
+        // 获取菜品数据
+        const obtaindishes = `${url}obtaindishes`
+        // 下架菜品
+        const fromsale = `${url}fromsale`
+        // 编辑菜品
+        const editdishes = `${url}editdishes`
 
         return {register,login,pulluserlist,gettable,obtainorder,vieworder,uploadres,
-            obtaincate,obtainunit,dishunit,putdishes}
+            obtaincate,obtainunit,dishunit,putdishes,obtaindishes,fromsale,editdishes}
     }
 }
 

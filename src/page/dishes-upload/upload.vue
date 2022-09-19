@@ -101,6 +101,7 @@
 <script>
 import { ArrowRight,Plus } from '@element-plus/icons-vue'
 import {shallowRef,reactive,toRefs,getCurrentInstance,toRaw,onMounted} from 'vue'
+import {useRouter,useRoute} from 'vue-router'
 export default {
     components:{
         Plus
@@ -109,6 +110,8 @@ export default {
         const icon = shallowRef(ArrowRight)
         const {proxy} = getCurrentInstance()
         const img_url = proxy.$urls.m().uploadres
+        const jump_router = useRouter()//跳转页面
+        const router = useRoute()//接收值
         const oper_data = reactive({
             catevalue:'',//选中的菜品类目
             name:'',//菜品名称
@@ -194,18 +197,33 @@ export default {
           const {id,catevalue,name,unitprice,compvalue,goodsimage} = oper_data
           const obj = {id,category:catevalue,name,unitprice,
                       unit:compvalue,image:goodsimage}
+          const URL = id == '' ? proxy.$urls.m().putdishes: proxy.$urls.m().editdishes
           try {
-            const res =await new proxy.$request(proxy.$urls.m().putdishes,obj).modepost()
+            const res =await new proxy.$request(URL,obj).modepost()
             console.log(res);
             if(res.status != 200) {
               new proxy.$tips(res.data.msg,'warning').mess_age()
             }else {
               new proxy.$tips(res.data.msg,'success').mess_age()
+              jump_router.push({name:'dishes'})
             }
             oper_data.subload = false
           }catch(e) {
             oper_data.subload = false
           }
+        }
+
+        // 接收编辑菜品传来的数据
+        const etid_data = router.params.val
+        if (etid_data != undefined) {
+          const value = JSON.parse(etid_data)
+          const {category,name,unitprice,unit,image,_id} = value
+          oper_data.id = _id
+          oper_data.catevalue = category
+          oper_data.name = name
+          oper_data.unitprice = JSON.stringify(unitprice)
+          oper_data.compvalue = unit
+          oper_data.goodsimage = image
         }
 
 
