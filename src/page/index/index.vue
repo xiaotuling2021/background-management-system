@@ -2,10 +2,10 @@
     <div>
         <div class="sidebar-top">
             <div>星巴克后台管理</div>
-            <div>退出</div>
+            <div @click="signOut">退出</div>
         </div>
         <div class="sidebar-cont">
-            <el-menu :default-active="ac_index" @select="select">
+            <el-menu :default-active="ac_index" @select="Select">
               <div v-for="(item,index) in items" :key="index">
                 <router-link :to="{path:item.router}">
                   <el-menu-item v-if="item.Subclass.length == 0" :index="item.id">
@@ -39,6 +39,7 @@
 <script>
 import {Watermelon,Pear,Bowl} from '@element-plus/icons-vue'
 import { shallowRef,ref, onMounted } from 'vue'
+import {useRouter} from 'vue-router'
 export default {
     components: {
         Watermelon,
@@ -46,7 +47,7 @@ export default {
         Bowl
     },
     setup() {
-        const ac_index = ref('1')
+        const router = useRouter()
         const Array = [
             {
                 id:'1',
@@ -85,7 +86,7 @@ export default {
                     {
                         id:'5-1',
                         title:'员工详情',
-                        router:''
+                        router:'role'
                     },
                     {
                         id:'5-2',
@@ -96,14 +97,21 @@ export default {
             },
         ]
         const items = shallowRef(Array)
-        function select(index,indexPath) {
+        const ac_index = ref('2')
+        function Select(index,indexPath) {
             localStorage.setItem('menuid',JSON.stringify(index))
         }
         onMounted(()=>{
             ac_index.value = JSON.parse(localStorage.getItem('menuid'))
         })
 
-        return {items,ac_index,select}
+        // 退出
+        const signOut = ()=>{
+            localStorage.clear()
+            router.push({name:'login'})
+        }
+
+        return {items,ac_index,Select,signOut}
     },
 }
 </script>

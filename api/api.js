@@ -31,9 +31,12 @@ const urls = class{
         const fromsale = `${url}fromsale`
         // 编辑菜品
         const editdishes = `${url}editdishes`
+        // 提交员工数据
+        const addem = `${url}addem`
 
         return {register,login,pulluserlist,gettable,obtainorder,vieworder,uploadres,
-            obtaincate,obtainunit,dishunit,putdishes,obtaindishes,fromsale,editdishes}
+            obtaincate,obtainunit,dishunit,putdishes,obtaindishes,fromsale,editdishes,
+            addem}
     }
 }
 

@@ -62,7 +62,7 @@
 		     :total="total"
 		     :hide-on-single-page="true"
 		     @current-change="currentchange"
-		 />
+		   />
     </div>
     <!-- 弹窗 -->
     <Dialog ref="dialog"></Dialog>
