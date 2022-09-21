@@ -97,7 +97,7 @@ export default {
             },
         ]
         const items = shallowRef(Array)
-        const ac_index = ref('2')
+        const ac_index = ref('1')
         function Select(index,indexPath) {
             localStorage.setItem('menuid',JSON.stringify(index))
         }

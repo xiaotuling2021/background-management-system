@@ -33,10 +33,16 @@ const urls = class{
         const editdishes = `${url}editdishes`
         // 提交员工数据
         const addem = `${url}addem`
+        // 获取员工数据
+        const getemployees = `${url}getemployees`
+        // 修改员工离职状态
+        const modifyresi = `${url}modifyresi`
+        // 删除员工数据
+        const deleteemp = `${url}deleteemp`
 
         return {register,login,pulluserlist,gettable,obtainorder,vieworder,uploadres,
             obtaincate,obtainunit,dishunit,putdishes,obtaindishes,fromsale,editdishes,
-            addem}
+            addem,getemployees,modifyresi,deleteemp}
     }
 }
 

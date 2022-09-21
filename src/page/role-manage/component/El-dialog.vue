@@ -27,7 +27,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="Submit">确定</el-button
+        <el-button type="primary" @click="Submit" :loading="sub_load">确定</el-button
         >
       </span>
     </template>
@@ -37,7 +37,8 @@
 <script>
 import {reactive,toRefs,getCurrentInstance} from 'vue'
 export default {
-    setup() {
+    emits:['launch'],
+    setup(props,{emit}) {
         const {proxy} = getCurrentInstance()
         const form = {
             job_num:'',//工号
@@ -47,8 +48,11 @@ export default {
             quit:'',//是否离职
         }
 
-        const state = reactive({form,
-                      dialogFormVisible:false})
+        const state = reactive({
+                        form,
+                        dialogFormVisible:false,
+                        sub_load:false
+                      })
 
         // 被父组件调用
         function add() {
@@ -57,6 +61,7 @@ export default {
 
         // 提交
         const Submit = async() => {
+            state.sub_load = true
             try {
                 const {job_num,name,sex,position,quit} = form
                 const obj = {jobnumber:job_num,name,sex,position,quit}
@@ -66,8 +71,12 @@ export default {
                 }else {
                     new proxy.$tips(res.data.msg,'success').mess_age()
                     state.dialogFormVisible = false
+                    // 调用父组件的方法
+                    emit('launch')
                 }
+                state.sub_load = false
             }catch(e){
+                state.sub_load = false
                 new proxy.$tips('服务器发生错误 ','danger').mess_age()
             }
         }
