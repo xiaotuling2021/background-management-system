@@ -4,7 +4,7 @@
    title="详细菜单"
    width="31.25rem"
    center
-   custom-class="hei_dialog"
+   class="hei_dialog"
    :close-on-click-modal="false"
   >
     <div class="menu-padd" v-for="(item,index) in res.menu_data" :key="index">

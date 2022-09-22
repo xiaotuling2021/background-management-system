@@ -38,7 +38,7 @@
 
 <script>
 import {Watermelon,Pear,Bowl} from '@element-plus/icons-vue'
-import { shallowRef,ref, onMounted } from 'vue'
+import { shallowRef,ref, onMounted,reactive} from 'vue'
 import {useRouter} from 'vue-router'
 export default {
     components: {
@@ -53,7 +53,7 @@ export default {
                 id:'1',
                 icon:Watermelon,
                 title:'数据分析',
-                router:'',
+                router:'data',
                 Subclass:[]//是否有二级，三级菜单
             },
             {
@@ -98,8 +98,8 @@ export default {
         ]
         const items = shallowRef(Array)
         const ac_index = ref('1')
-        function Select(index,indexPath) {
-            localStorage.setItem('menuid',JSON.stringify(index))
+        function Select(index,path) {
+          localStorage.setItem('menuid',JSON.stringify(index))    
         }
         onMounted(()=>{
             ac_index.value = JSON.parse(localStorage.getItem('menuid'))
@@ -110,8 +110,7 @@ export default {
             localStorage.clear()
             router.push({name:'login'})
         }
-
-        return {items,ac_index,Select,signOut}
+        return {items,signOut,ac_index,Select}
     },
 }
 </script>

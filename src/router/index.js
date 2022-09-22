@@ -12,7 +12,7 @@ const routes = [
         path: '/index',
         name: 'index',
         component: ()=>import(/*webpackChunkName:'Index'*/'@/page/index/index.vue'),
-        redirect: '/userpage',
+        redirect: '/data',
         children: [
             {//用户列表
                 path: '/userpage',
@@ -38,6 +38,11 @@ const routes = [
                 path:'/role',
                 name:'role',
                 component:()=>import(/*webpackChunkName:'Role'*/'@/page/role-manage/role.vue')
+            },
+            {//数据分析
+                path:'/data',
+                name:'data',
+                component:()=>import(/*webpackChunkName:'Data'*/ '@/page/data-analysis/data.vue')
             }
     ]
     },

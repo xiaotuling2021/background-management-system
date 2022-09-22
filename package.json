@@ -7,10 +7,12 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@antv/g2": "^4.2.8",
+    "@antv/g2plot": "^2.4.20",
     "@element-plus/icons-vue": "^2.0.9",
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
-    "element-plus": "^2.2.13",
+    "element-plus": "^2.2.17",
     "js-base64": "^3.7.2",
     "normalize.css": "^8.0.1",
     "vue": "^3.2.13",

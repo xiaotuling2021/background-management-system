@@ -44,7 +44,9 @@ export default {
                 new proxy.$tips(res.data.msg,'warning').mess_age()
               }else {
                 // 跳转到内容页面
+                let ids = '1'
                 localStorage.setItem('token',res.data.data.token)
+                localStorage.setItem('menuid',JSON.stringify(ids))
                 router.push({name:'index'})
               }
               user.load = false
