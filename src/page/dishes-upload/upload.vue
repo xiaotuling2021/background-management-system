@@ -160,12 +160,11 @@ export default {
             const CATE = new proxy.$request(proxy.$urls.m().obtaincate).modeget()
             const UNIT = new proxy.$request(proxy.$urls.m().obtainunit).modeget()
             const res = await Promise.all([CATE,UNIT])
-            console.log(res);
             oper_data.cate = res[0].data.data
             oper_data.company = res[1].data.data
             oper_data.company.push({label:"自定义单位",unid:"980",value:"自定义单位",_id:"980"})
           }catch(e){
-            
+            new proxy.$tips('服务器发生错误','error').mess_age()
           }
         }
 
@@ -175,7 +174,6 @@ export default {
           oper_data.unitload = true
           try {
             const res = await new proxy.$request(proxy.$urls.m().dishunit,obj).modepost()
-            console.log(res);
             if (res.status != 200) {
               new proxy.$tips(res.data.msg,'warning').mess_age()
             }else {
@@ -200,7 +198,6 @@ export default {
           const URL = id == '' ? proxy.$urls.m().putdishes: proxy.$urls.m().editdishes
           try {
             const res =await new proxy.$request(URL,obj).modepost()
-            console.log(res);
             if(res.status != 200) {
               new proxy.$tips(res.data.msg,'warning').mess_age()
             }else {

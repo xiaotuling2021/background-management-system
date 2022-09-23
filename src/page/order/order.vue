@@ -1,5 +1,5 @@
 <template>
-  <div class="ordering">
+  <div class="ordering" v-loading.fullscreen.lock="fullscreenLoading">
     <div class="heading">订单管理</div>
     <div class="query-view">
         <!-- 日期选择器 -->
@@ -79,6 +79,7 @@ export default {
     },
     setup() {
         const {proxy} = getCurrentInstance()
+        const fullscreenLoading = ref(true)
         const dialog = ref()
         const oper_data = reactive({
             time:[],//选中的时间
@@ -109,6 +110,7 @@ export default {
             oper_data.options = res[0].data.data
             oper_data.table_data = res[1].data.data.result
             oper_data.total = res[1].data.data.total
+            fullscreenLoading.value = false
           }catch(e) {
             new proxy.$tips('服务器发生错误','error').mess_age()
           }
@@ -141,7 +143,7 @@ export default {
           get_order()
         }
 
-        return {...toRefs(oper_data),currentchange,detailed,dialog,queryFun}
+        return {...toRefs(oper_data),currentchange,detailed,dialog,queryFun,fullscreenLoading}
     },
 }
 </script>

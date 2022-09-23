@@ -1,5 +1,5 @@
 <template>
-    <div class="ordering">
+    <div class="ordering" v-loading.fullscreen.lock="fullscreenLoading">
         <div class="heading">菜品管理</div>
         <div class="button-view">
             <router-link :to="{name:'upload'}">
@@ -46,12 +46,13 @@
 </template>
 
 <script>
-import {reactive,toRefs,getCurrentInstance,onMounted} from 'vue'
+import {reactive,toRefs,getCurrentInstance,onMounted,ref} from 'vue'
 import {ElMessageBox } from 'element-plus'
 import {useRouter} from 'vue-router'
 export default {
     setup() {
       const {proxy} = getCurrentInstance()
+      const fullscreenLoading = ref(true)
       const router = useRouter()
       const oper_data = reactive({
         page:0,
@@ -66,11 +67,11 @@ export default {
       const get_dishes = async() => {
         try{
           const res = await new proxy.$request(proxy.$urls.m().obtaindishes + "?page=" + oper_data.page).modeget()
-          console.log(res);
           oper_data.dish_data = res.data.data.result
           oper_data.total = res.data.data.total
+          fullscreenLoading.value = false
         }catch(e){
-
+          new proxy.$tips('服务器发生错误','error').mess_age()
         }
       }
 
@@ -85,26 +86,22 @@ export default {
             type: 'warning',
           }
         ).then(res => {
-          console.log('确定');
           Shelf(id,index)
         }).catch(err => {
-          console.log('取消');
         })
       }
       // 下架菜品
       const Shelf = async(id,index) => {
         try{
           const res = await new proxy.$request(proxy.$urls.m().fromsale + "?id=" + id).modeget()
-          console.log(res);
           oper_data.dish_data[index].onsale = false
         }catch(e){
-
+          new proxy.$tips('服务器发生错误','error').mess_age()
         }
       }
 
       // 编辑商品
       const Edit = (scope)=>{
-        console.log(scope);
         const val = JSON.stringify(scope)
         router.push({name:'upload',params:{val}})
       }
@@ -114,7 +111,7 @@ export default {
         oper_data.page = e - 1
         get_dishes()
       }
-      return {currentchange,...toRefs(oper_data),offthe_Shelf,Edit}
+      return {currentchange,...toRefs(oper_data),offthe_Shelf,Edit,fullscreenLoading}
     },
 }
 </script>

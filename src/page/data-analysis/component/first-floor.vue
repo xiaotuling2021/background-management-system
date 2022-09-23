@@ -7,34 +7,28 @@
             <div id="Piechart"></div>
           </div>
       </el-col>
-      <el-col :span="12"><div>2</div></el-col>
+      <el-col :span="12">
+        <div class="grid-content">
+            <div class="grid_title">客户年龄分布</div>
+            <div id="Columnar"></div>
+          </div>
+      </el-col>
   </el-row>
 </template>
 
 <script>
-import { Pie } from '@antv/g2plot';
-import {onMounted} from 'vue'
+import { Pie,Column } from '@antv/g2plot';
+import {onMounted,watch} from 'vue'
 export default {
-    setup() {
-        onMounted(()=>{
-            pieChart()
-        })
+    props:{pieChert:Array,hisTogram:Array},
+    setup(props) {
         // 饼图
-        const pieChart = ()=>{
-          const data = [
-            { type: '分类一', value: 27 },
-            { type: '分类二', value: 25 },
-            { type: '分类三', value: 18 },
-            { type: '分类四', value: 15 },
-            { type: '分类五', value: 10 },
-            { type: '其他', value: 5 },
-          ];
-          
+        const pieChart = (data)=>{
           const piePlot = new Pie('Piechart', {
             appendPadding: 10,
             data,
             angleField: 'value',
-            colorField: 'type',
+            colorField: 'name',
             radius: 0.8,
             label: {
               type: 'outer',
@@ -45,6 +39,45 @@ export default {
           //渲染到html上面
           piePlot.render();
         }
+        // 柱状图
+        const coLumnar = (data)=>{
+          const columnPlot = new Column('Columnar', {
+            data,
+            xField: 'age',
+            yField: 'sales-volume',
+            label: {
+              // 可手动配置 label 数据标签位置
+              position: 'middle', // 'top', 'bottom', 'middle',
+              // 配置样式
+              style: {
+                fill: '#FFFFFF',
+                opacity: 0.6,
+              },
+            },
+            xAxis: {
+              label: {
+                autoHide: true,
+                autoRotate: false,
+              },
+            },
+            meta: {
+              'age': {
+                alias: '类别',
+              },
+              'sales-volume': {
+                alias: '销售额',
+              },
+            },
+          });
+          
+          columnPlot.render();
+        }
+
+        // 需要持续不断的获取数据所以需要watch时间,watch实践里面一个值是绑定的属性
+        watch(props,(newval,oldval)=>{
+          pieChart(newval.pieChert)
+          coLumnar(newval.hisTogram)
+        })
     },
 }
 </script>

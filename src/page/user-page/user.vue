@@ -1,5 +1,5 @@
 <template>
-    <div class="ordering">
+    <div class="ordering" v-loading.fullscreen.lock="fullscreenLoading">
         <div class="heading">用户列表</div>
         <div>
           <el-table :data="user_array" style="width: 100%">
@@ -33,10 +33,11 @@
 </template>
 
 <script>
-import {reactive,onMounted,getCurrentInstance,toRefs} from 'vue'
+import {reactive,onMounted,getCurrentInstance,toRefs,ref} from 'vue'
 export default {
     setup() {
         const {proxy} = getCurrentInstance()
+        const fullscreenLoading = ref(true)
         const open_data = reactive({
             user_array:[],//表格数据
             total:0,//数据总条数
@@ -48,9 +49,9 @@ export default {
         async function userlist() {
             try {
                 const res = await new proxy.$request(proxy.$urls.m().pulluserlist + '?page=' + open_data.page).modeget()
-                console.log(res);
                 open_data.user_array = res.data.data.result
                 open_data.total = res.data.data.total
+                fullscreenLoading.value = false
             }catch(e) {
                 new proxy.$tips('服务器发生错误','error').mess_age()
             }
@@ -59,7 +60,7 @@ export default {
             open_data.page = e-1
             userlist()
         } 
-        return {...toRefs(open_data),currentchange}
+        return {...toRefs(open_data),currentchange,fullscreenLoading}
     },
 }
 </script>

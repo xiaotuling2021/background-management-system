@@ -39,10 +39,14 @@ const urls = class{
         const modifyresi = `${url}modifyresi`
         // 删除员工数据
         const deleteemp = `${url}deleteemp`
+        // 数据分析
+        const analysis = `${url}analysis`
+        // 折线图的更新数据
+        const switchcate = `${url}switchcate`
 
         return {register,login,pulluserlist,gettable,obtainorder,vieworder,uploadres,
             obtaincate,obtainunit,dishunit,putdishes,obtaindishes,fromsale,editdishes,
-            addem,getemployees,modifyresi,deleteemp}
+            addem,getemployees,modifyresi,deleteemp,analysis,switchcate}
     }
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="ordering">
+  <div class="ordering" v-loading.fullscreen.lock="fullscreenLoading">
     <div class="heading">员工详情</div>
     <div class="query-view">
         <el-button type="success" @click="add_to">添加员工</el-button>
@@ -51,6 +51,7 @@ export default {
             arr_id:[],//存储待删除的员工_id
             cur_page:1,//分页组件当前页
         })
+        const fullscreenLoading = ref(true)
         const {proxy} = getCurrentInstance()
         const dialog = ref()
         // 调用子组件显示弹窗
@@ -75,6 +76,7 @@ export default {
             const res = await new proxy.$request(proxy.$urls.m().getemployees + '?page=' + oper_data.page).modeget()
             oper_data.table_data = res.data.data.result
             oper_data.total = res.data.data.total
+            fullscreenLoading.value = false
           }catch(e){
             new proxy.$tips('服务器发生错误','error').mess_age()
           } 
@@ -115,12 +117,11 @@ export default {
           const obj = {arrayid:oper_data.arr_id}
           try{
             const res = await new proxy.$request(proxy.$urls.m().deleteemp,obj).modepost()
-            console.log(res);
             oper_data.arr_id = []
             get_role()
             new proxy.$tips(res.data.msg,'success').mess_age()
           }catch(e){
-            console.log(e);
+            new proxy.$tips('服务器发生错误','error').mess_age()
           }
         }
 
@@ -148,7 +149,7 @@ export default {
         }
 
         return {...toRefs(oper_data),currentchange,
-        add_to,dialog,Switch,Delete,Select,Selectall,Batch,launch}
+        add_to,dialog,Switch,Delete,Select,Selectall,Batch,launch,fullscreenLoading}
     },
 }
 </script>
